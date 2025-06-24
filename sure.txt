@@ -1,0 +1,101 @@
+Sure Adı	Sayfa No
+Abese Suresi	584
+Ahkaf Suresi	501
+Ahzab Suresi	417
+Ala, Ğaşiye  Suresi	591
+Alak Suresi	597
+Ali-İmran Suresi	49
+Ankebut Suresi	390
+Araf Suresi	150
+Asr, Hümeze, Fil Suresi	601
+Bakara Suresi	1
+Beled Suresi	593
+Buruç Suresi	589
+Casiye Suresi	498
+Cinn Suresi	571
+Cuma Suresi	552
+Duhan Suresi	495
+Enam Suresi	127
+Enbiya Suresi	321
+Enfal Suresi	176
+Fatır Suresi	433
+Fatiha Suresi	0
+Fecr Suresi	592
+Fetih Suresi	510
+Furkan Suresi	358
+Fussilet Suresi	476
+Gaf Suresi	517
+Garia, Tekasür Suresi	600
+Hacc Suresi	331
+Hadid Suresi	536
+Hakk Suresi	565
+Haşr Suresi	544
+Hıcr Suresi	261
+Hucurat Suresi	514
+Hud Suresi	220
+İbrahim Suresi	254
+İhlas, Felak, Nas Suresi	604
+İnfitar Suresi	586
+İnsan Suresi	577
+İnşikak Suresi	588
+İnşirah, Tin Suresi	596
+İsra Suresi	281
+Kadir, Beyyine Suresi	598
+Kafirun, Nasr, Tebbet Suresi	603
+Kalem Suresi	563
+Kamer Suresi	527
+Kasas Suresi	384
+Kehf Suresi	292
+Kıyamet Suresi	576
+Kureyş, Maun, Kevser Suresi	602
+Leyl, Duha Suresi	595
+Lokman Suresi	410
+Maide Suresi	105
+Meariç Suresi	567
+Meryem	304
+Muhamed Suresi	506
+Mu'min Suresi	466
+Mu'Minun Suresi	341
+Mutaffifin Suresi	587
+Mücadele Suresi	541
+Müddesir Suresi	574
+Mülk Suresi	561
+Mümtehine Suresi	548
+Münafikun Suresi	553
+Mürselet Suresi	579
+Müzemmil Suresi	573
+Nahl Suresi	266
+Naziat Suresi	582
+Nebe Suresi	581
+Necm Suresi	525
+Neml Suresi	376
+Nisa Suresi	76
+Nuh Suresi	569
+Nur Suresi	349
+Rad Suresi	248
+Rahman Suresi	530
+Rum Suresi	403
+Sad Suresi	452
+Saff Suresi	550
+Saffat Suresi	445
+Sebe Suresi	427
+Secde Suresi	414
+Şems Suresi	594
+Şuara Suresi	366
+Şuara Suresi	482
+Tağabun Suresi	555
+Taha Suresi	311
+Tahrim Suresi	559
+Talak Suresi	557
+Tarık Suresi	590
+Tekvir Suresi	585
+Tevbe Suresi	186
+Tur Suresi	522
+Vakıa Suresi	533
+Yasin Suresi	439
+Yunus Suresi	207
+Yusuf Suresi	234
+Zariyat Suresi	519
+Zilzal, Adiyat Suresi	599
+Zuhruf Suresi	488
+Zumer Suresi	457

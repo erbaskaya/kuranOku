@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="tr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Kuran Okuma Uygulaması</title>
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="container">
+      <div class="sidebar">
+        <div class="button-block">
+          <button onclick="previousPage()">Önceki Sayfa</button>
+          <button onclick="nextPage()">Sonraki Sayfa</button>
+        </div>
+        <hr />
+        <div class="select-pageCuz">
+          <select id="pageSelect" onchange="jumpToPage()"></select>
+          <select id="cuzSelect" onchange="jumpToCuz()"></select>
+        </div>
+        <hr />
+        <div class="page-info">
+          <div class="currentPageDisplay">
+            Mevcut Sayfa: <span id="currentPageDisplay"></span>
+          </div>
+          <div class="savedPage">
+            Kalınan Sayfa: <span id="savedPage"></span>
+          </div>
+        </div>
+        <hr />
+        <h3>Sureler</h3>
+        <div class="search-container">
+          <input
+            type="text"
+            id="sureSearch"
+            placeholder="Sure ara..."
+            class="sure-search"/>
+        </div>
+        <div class="sure-list-container">
+          <ul id="sureList" class="sure-list"></ul>
+        </div>
+      </div>
+      <div class="content">
+        <div class="image-container">
+          <img id="kuranPage" src="Kuran_Sayfalari/0.png" alt="Kuran Sayfası" />
+        </div>
+      </div>
+    </div>
+    <div id="secdePopup" class="secde-popup">
+      Okuduğunuz sayfada <b>SECDE AYETİ</b> vardır.
+    </div>
+    <script src="script.js"></script>
+  </body>
+</html>

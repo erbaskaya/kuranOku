@@ -1,0 +1,31 @@
+CÜZ NO	SURE ADI	SAYFA NO
+Cüz 1	Fatiha Suresi	0
+Cüz 2	Bakara Suresi	20
+Cüz 3	Ali-İmran Suresi40
+Cüz 4	Ali-İmran Suresi60
+Cüz 5	Nisa Suresi	80
+Cüz 6	Maide Suresi	100
+Cüz 7	Enam Suresi	120
+Cüz 8	Araf Suresi	140
+Cüz 9	Araf Suresi	160
+Cüz 10	Tevbe Suresi	180
+Cüz 11	Yunus Suresi	200
+Cüz 12	Hud Suresi	220
+Cüz 13	Rad Suresi	240
+Cüz 14	Hıcr Suresi	260
+Cüz 15	İsra Suresi	280
+Cüz 16	Meryem Suresi	300
+Cüz 17	Enbiya Suresi	320
+Cüz 18	Mu'Minun Suresi	340
+Cüz 19	Furkan Suresi	360
+Cüz 20	Kasas Suresi	380
+Cüz 21	Rum Suresi	400
+Cüz 22	Ahzab Suresi	420
+Cüz 23	Yasin Suresi	440
+Cüz 24	Zumer Suresi	460
+Cüz 25	Şuara Suresi	480
+Cüz 26	Ahkaf Suresi	500
+Cüz 27	Tur Suresi	520
+Cüz 28	Mücadele Suresi	540
+Cüz 29	Mülk Suresi	560
+Cüz 30	Nebe Suresi	580
