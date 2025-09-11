@@ -1,5 +1,5 @@
 let currentPage = 0;
-const totalPages = 604; // Örneğin toplam 604 sayfa var
+const totalPages = 605; // Örneğin toplam 604 sayfa var
 const savedPageKey = 'kuranSavedPage';
 let cuzler = [];
 let sureler = [
@@ -267,4 +267,5 @@ document.getElementById('sureSearch').addEventListener('input', function(e) {
             sureItems[i].style.display = 'none';
         }
     }
+
 });
