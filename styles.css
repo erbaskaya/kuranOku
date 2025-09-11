@@ -110,6 +110,38 @@ body {
     object-fit: contain;
 }
 
+.sonrakiSayfa{
+    background-color: #007bff;
+    border-radius: 9px;
+    border:1px solid;
+    color: #f4f4f4;
+    font-weight: 700;
+    padding: 8px 20px;
+    text-align: center;
+    margin: 35px;
+    min-width: 90px;
+    cursor: pointer;
+}
+.oncekiSayfa{
+    background-color: #007bff;
+    border-radius: 9px;
+    border:1px solid;
+    color: #f4f4f4;
+    font-weight: 700;
+    padding: 8px 20px;
+    text-align: center;
+    margin: 35px;
+    min-width: 90px;
+    cursor: pointer;
+}
+
+.sonrakiSayfa:hover{
+    background-color: #0056b3;
+}
+.oncekiSayfa:hover{
+    background-color: #0056b3;
+}
+
 .currentPageDisplay{
     background-color: #007bff;
     color: #f4f4f4;
@@ -205,5 +237,8 @@ body {
     }
     .sure-list-container{
         max-height: 200px;
+    }
+    .oncekiSayfa, .sonrakiSayfa{
+        display: none;
     }
 }
