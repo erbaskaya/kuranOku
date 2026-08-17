@@ -6,7 +6,7 @@
   <meta name="theme-color" content="#0f766e" />
   <meta name="description" content="Sade, hızlı ve kullanışlı Kur'an okuma uygulaması" />
   <title>Kur'an Oku</title>
-  <link rel="stylesheet" href="styles.css?v=2" />
+  <link rel="stylesheet" href="styles.css?v=4" />
 </head>
 <body>
   <div class="app-shell">
@@ -81,6 +81,7 @@
     <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
 
     <main class="reader">
+      <button class="focus-exit-btn" id="exitFocusBtn" type="button" aria-label="Odak modundan çık" hidden>← Menüyü göster</button>
       <header class="topbar">
         <div class="topbar-left">
           <button class="icon-btn mobile-only" id="openSidebarBtn" type="button" aria-label="Menüyü aç">☰</button>
@@ -90,6 +91,11 @@
           </div>
         </div>
         <div class="topbar-actions">
+          <div class="zoom-controls" aria-label="Sayfa büyütme kontrolleri">
+            <button class="zoom-btn" id="zoomOutBtn" type="button" aria-label="Sayfayı küçült" title="Küçült">−</button>
+            <button class="zoom-value" id="zoomResetBtn" type="button" aria-label="Büyütmeyi yüzde 100 yap" title="Büyütmeyi sıfırla">100%</button>
+            <button class="zoom-btn" id="zoomInBtn" type="button" aria-label="Sayfayı büyüt" title="Büyüt">+</button>
+          </div>
           <button class="icon-btn" id="shareBtn" type="button" aria-label="Bu sayfayı paylaş" title="Paylaş">↗</button>
           <button class="bookmark-icon-btn" id="quickBookmarkBtn" type="button" aria-label="Bu sayfayı yer imlerine ekle" title="Yer imi">☆</button>
         </div>
@@ -101,10 +107,12 @@
           <small>Önceki</small>
         </button>
 
-        <section class="page-card" aria-live="polite">
-          <div class="page-loading" id="pageLoading">Sayfa yükleniyor…</div>
-          <img id="kuranPage" src="Kuran_Sayfalari/0.png" alt="Kur'an 1. sayfa" draggable="false" />
-        </section>
+        <div class="page-scroll" id="pageScroll" tabindex="0" aria-label="Kur'an sayfası görüntüleme alanı">
+          <section class="page-card" id="pageCard" aria-live="polite">
+            <div class="page-loading" id="pageLoading">Sayfa yükleniyor…</div>
+            <img id="kuranPage" src="Kuran_Sayfalari/0.png" alt="Kur'an 1. sayfa" draggable="false" />
+          </section>
+        </div>
 
         <button class="nav-btn next" id="nextBtn" type="button" aria-label="Sonraki sayfa">
           <small>Sonraki</small>
@@ -121,6 +129,6 @@
   </div>
 
   <div class="toast" id="toast" role="status" aria-live="polite"></div>
-  <script src="script.js?v=2"></script>
+  <script src="script.js?v=4"></script>
 </body>
 </html>
