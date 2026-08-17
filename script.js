@@ -3,8 +3,11 @@ const STORAGE_KEYS = {
   lastPage: 'kuranLastPage',
   oldSavedPage: 'kuranSavedPage',
   bookmarks: 'kuranBookmarks',
-  theme: 'kuranTheme'
+  theme: 'kuranTheme',
+  zoom: 'kuranZoom'
 };
+
+const ZOOM_LEVELS = [100, 125, 150, 175, 200, 250];
 
 const JUZ_START_PAGES = [
   0, 21, 41, 61, 81, 101, 121, 141, 161, 181,
@@ -124,6 +127,8 @@ let bookmarks = [];
 let toastTimer;
 let touchStartX = 0;
 let touchStartY = 0;
+let zoomLevel = 100;
+let resizeFrame;
 
 const els = {};
 
@@ -139,6 +144,11 @@ function init() {
     currentSurahLabel: $('currentSurahLabel'),
     kuranPage: $('kuranPage'),
     pageLoading: $('pageLoading'),
+    pageScroll: $('pageScroll'),
+    pageCard: $('pageCard'),
+    zoomOutBtn: $('zoomOutBtn'),
+    zoomResetBtn: $('zoomResetBtn'),
+    zoomInBtn: $('zoomInBtn'),
     prevBtn: $('prevBtn'),
     nextBtn: $('nextBtn'),
     mobilePrevBtn: $('mobilePrevBtn'),
@@ -159,7 +169,8 @@ function init() {
     shareBtn: $('shareBtn'),
     openSidebarBtn: $('openSidebarBtn'),
     closeSidebarBtn: $('closeSidebarBtn'),
-    sidebarBackdrop: $('sidebarBackdrop')
+    sidebarBackdrop: $('sidebarBackdrop'),
+    exitFocusBtn: $('exitFocusBtn')
   });
 
   migrateOldStorage();
@@ -186,6 +197,8 @@ function migrateOldStorage() {
 
 function loadState() {
   lastReadPage = clampPage(localStorage.getItem(STORAGE_KEYS.lastPage));
+  const storedZoom = Number(localStorage.getItem(STORAGE_KEYS.zoom));
+  zoomLevel = ZOOM_LEVELS.includes(storedZoom) ? storedZoom : 100;
   try {
     const stored = JSON.parse(localStorage.getItem(STORAGE_KEYS.bookmarks) || '[]');
     bookmarks = Array.isArray(stored)
@@ -233,7 +246,11 @@ function bindEvents() {
   els.sureSearch.addEventListener('input', renderSureList);
   els.themeBtn.addEventListener('click', toggleTheme);
   els.focusBtn.addEventListener('click', toggleFocusMode);
+  els.exitFocusBtn?.addEventListener('click', () => setFocusMode(false));
   els.shareBtn.addEventListener('click', shareCurrentPage);
+  els.zoomOutBtn.addEventListener('click', zoomOut);
+  els.zoomInBtn.addEventListener('click', zoomIn);
+  els.zoomResetBtn.addEventListener('click', resetZoom);
 
   els.openSidebarBtn.addEventListener('click', openSidebar);
   els.closeSidebarBtn.addEventListener('click', closeSidebar);
@@ -241,15 +258,19 @@ function bindEvents() {
 
   els.kuranPage.addEventListener('load', () => {
     els.kuranPage.classList.remove('loading');
-    els.pageLoading.hidden = true;
+    hidePageLoading();
+    applyZoom({ resetScroll: true });
   });
   els.kuranPage.addEventListener('error', () => {
     els.kuranPage.classList.remove('loading');
-    els.pageLoading.hidden = false;
-    els.pageLoading.textContent = 'Sayfa görseli yüklenemedi.';
+    showPageLoading('Sayfa görseli yüklenemedi.');
   });
 
   document.addEventListener('keydown', handleKeyboard);
+  window.addEventListener('resize', () => {
+    cancelAnimationFrame(resizeFrame);
+    resizeFrame = requestAnimationFrame(() => applyZoom());
+  });
   window.addEventListener('hashchange', () => {
     const page = getPageFromHash();
     if (page !== null && page !== currentPage) setPage(page, { updateHash: false });
@@ -262,6 +283,7 @@ function bindEvents() {
     touchStartY = touch.clientY;
   }, { passive: true });
   stage.addEventListener('touchend', e => {
+    if (zoomLevel > 100) return;
     const touch = e.changedTouches[0];
     const dx = touch.clientX - touchStartX;
     const dy = touch.clientY - touchStartY;
@@ -278,9 +300,15 @@ function setPage(page, options = {}) {
   currentPage = next;
 
   els.kuranPage.classList.add('loading');
-  els.pageLoading.hidden = false;
-  els.pageLoading.textContent = 'Sayfa yükleniyor…';
+  showPageLoading('Sayfa yükleniyor…');
   els.kuranPage.src = `Kuran_Sayfalari/${currentPage}.png`;
+
+  // Cached images can already be complete before the load handler runs.
+  if (els.kuranPage.complete && els.kuranPage.naturalWidth > 0) {
+    els.kuranPage.classList.remove('loading');
+    hidePageLoading();
+    applyZoom({ resetScroll: true });
+  }
   els.kuranPage.alt = `Kur'an ${displayPage(currentPage)}`;
 
   els.pageSelect.value = String(currentPage);
@@ -479,20 +507,118 @@ function applyTheme(theme) {
 }
 
 function toggleFocusMode() {
-  document.body.classList.toggle('focus-mode');
-  const active = document.body.classList.contains('focus-mode');
+  setFocusMode(!document.body.classList.contains('focus-mode'));
+}
+
+function setFocusMode(active) {
+  document.body.classList.toggle('focus-mode', active);
   els.focusBtn.textContent = active ? '◫ Menüyü göster' : '◫ Odak modu';
+  if (els.exitFocusBtn) els.exitFocusBtn.hidden = !active;
+}
+
+function showPageLoading(message = 'Sayfa yükleniyor…') {
+  els.pageLoading.textContent = message;
+  els.pageLoading.hidden = false;
+  els.pageLoading.classList.add('show');
+}
+
+function hidePageLoading() {
+  els.pageLoading.classList.remove('show');
+  els.pageLoading.hidden = true;
 }
 
 function openSidebar() { document.body.classList.add('sidebar-open'); }
 function closeSidebar() { document.body.classList.remove('sidebar-open'); }
 
 function handleKeyboard(event) {
+  if (event.key === 'Escape' && document.body.classList.contains('focus-mode')) {
+    setFocusMode(false);
+    return;
+  }
   if (['INPUT', 'SELECT', 'TEXTAREA'].includes(document.activeElement?.tagName)) return;
   if (event.key === 'ArrowRight' || event.key.toLowerCase() === 'd') nextPage();
   if (event.key === 'ArrowLeft' || event.key.toLowerCase() === 'a') previousPage();
   if (event.key.toLowerCase() === 'b') toggleBookmark();
   if (event.key.toLowerCase() === 'f') toggleFocusMode();
+  if (event.key === '+' || event.key === '=') zoomIn();
+  if (event.key === '-') zoomOut();
+  if (event.key === '0') resetZoom();
+}
+
+function getFitPageWidth() {
+  if (!els.kuranPage || !els.pageScroll) return 0;
+  const naturalWidth = els.kuranPage.naturalWidth || 1024;
+  const naturalHeight = els.kuranPage.naturalHeight || 1668;
+  const availableWidth = Math.max(260, els.pageScroll.clientWidth || 0);
+  const isMobile = window.matchMedia('(max-width: 760px)').matches;
+
+  if (isMobile) return Math.min(availableWidth, naturalWidth);
+
+  const availableHeight = Math.max(320, window.innerHeight - 145);
+  const widthByHeight = availableHeight * (naturalWidth / naturalHeight);
+  return Math.min(availableWidth, widthByHeight, naturalWidth);
+}
+
+function applyZoom(options = {}) {
+  const { resetScroll = false, announce = false } = options;
+  if (!els.pageCard || !els.kuranPage || !els.pageScroll) return;
+
+  const isZoomed = zoomLevel > 100;
+  const fitWidth = getFitPageWidth();
+  const targetWidth = Math.max(260, Math.round(fitWidth * (zoomLevel / 100)));
+
+  els.pageScroll.classList.toggle('zoom-active', isZoomed);
+  els.pageCard.classList.toggle('zoomed', isZoomed);
+
+  if (isZoomed && fitWidth > 0) {
+    els.pageCard.style.width = `${targetWidth}px`;
+    els.pageCard.style.minWidth = `${targetWidth}px`;
+    els.kuranPage.style.width = '100%';
+    els.kuranPage.style.maxHeight = 'none';
+  } else {
+    els.pageCard.style.width = '';
+    els.pageCard.style.minWidth = '';
+    els.kuranPage.style.width = '';
+    els.kuranPage.style.maxHeight = '';
+  }
+
+  els.zoomResetBtn.textContent = `${zoomLevel}%`;
+  els.zoomResetBtn.setAttribute('aria-label', `Büyütme yüzde ${zoomLevel}. Yüzde 100 yapmak için tıklayın`);
+  els.zoomOutBtn.disabled = zoomLevel === ZOOM_LEVELS[0];
+  els.zoomInBtn.disabled = zoomLevel === ZOOM_LEVELS[ZOOM_LEVELS.length - 1];
+  localStorage.setItem(STORAGE_KEYS.zoom, String(zoomLevel));
+
+  if (resetScroll) {
+    requestAnimationFrame(() => {
+      els.pageScroll.scrollTop = 0;
+      els.pageScroll.scrollLeft = 0;
+    });
+  }
+
+  if (announce) showToast(`Sayfa büyütme: %${zoomLevel}`);
+}
+
+function setZoom(level, options = {}) {
+  const nearest = ZOOM_LEVELS.reduce((best, item) =>
+    Math.abs(item - level) < Math.abs(best - level) ? item : best
+  , ZOOM_LEVELS[0]);
+  zoomLevel = nearest;
+  applyZoom({ announce: true, ...options });
+}
+
+function zoomIn() {
+  const index = ZOOM_LEVELS.indexOf(zoomLevel);
+  if (index < ZOOM_LEVELS.length - 1) setZoom(ZOOM_LEVELS[index + 1]);
+}
+
+function zoomOut() {
+  const index = ZOOM_LEVELS.indexOf(zoomLevel);
+  if (index > 0) setZoom(ZOOM_LEVELS[index - 1]);
+}
+
+function resetZoom() {
+  if (zoomLevel === 100) return;
+  setZoom(100, { resetScroll: true });
 }
 
 async function shareCurrentPage() {
