@@ -1,56 +1,126 @@
 <!DOCTYPE html>
 <html lang="tr">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Kuran Okuma Uygulaması</title>
-    <link rel="stylesheet" href="styles.css" />
-  </head>
-  <body>
-    <div class="container">
-      <div class="sidebar">
-        <div class="button-block">
-          <button onclick="previousPage()">Önceki Sayfa</button>
-          <button onclick="nextPage()">Sonraki Sayfa</button>
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#0f766e" />
+  <meta name="description" content="Sade, hızlı ve kullanışlı Kur'an okuma uygulaması" />
+  <title>Kur'an Oku</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="sidebar" id="sidebar" aria-label="Okuma kontrolleri">
+      <div class="brand-row">
+        <div class="brand-mark" aria-hidden="true">ق</div>
+        <div>
+          <h1>Kur'an Oku</h1>
+          <p>Okumaya kaldığın yerden devam et.</p>
         </div>
-        <hr />
-        <div class="select-pageCuz">
-          <select id="pageSelect" onchange="jumpToPage()"></select>
-          <select id="cuzSelect" onchange="jumpToCuz()"></select>
-        </div>
-        <hr />
-        <div class="page-info">
-          <div class="currentPageDisplay">
-            Mevcut Sayfa: <span id="currentPageDisplay"></span>
+        <button class="icon-btn mobile-only" id="closeSidebarBtn" type="button" aria-label="Menüyü kapat">✕</button>
+      </div>
+
+      <section class="continue-card" aria-label="Okuma durumu">
+        <div class="continue-card__top">
+          <div>
+            <span class="eyebrow">Son okunan</span>
+            <strong id="lastReadLabel">1. sayfa</strong>
           </div>
-          <div class="savedPage">
-            Kalınan Sayfa: <span id="savedPage"></span>
-          </div>
+          <button class="primary-btn compact" id="continueBtn" type="button">Devam et</button>
         </div>
-        <hr />
-        <h3>Sureler</h3>
-        <div class="search-container">
-          <input
-            type="text"
-            id="sureSearch"
-            placeholder="Sure ara..."
-            class="sure-search"/>
+        <div class="progress-track" aria-hidden="true">
+          <span id="readingProgress"></span>
+        </div>
+        <small id="progressText">%0 tamamlandı</small>
+      </section>
+
+      <section class="control-card">
+        <div class="section-heading">
+          <h2>Hızlı geçiş</h2>
+        </div>
+        <div class="control-grid">
+          <label>
+            <span>Sayfa</span>
+            <select id="pageSelect" aria-label="Sayfa seç"></select>
+          </label>
+          <label>
+            <span>Cüz</span>
+            <select id="cuzSelect" aria-label="Cüz seç"></select>
+          </label>
+        </div>
+      </section>
+
+      <section class="control-card bookmarks-card">
+        <div class="section-heading">
+          <h2>Yer imleri</h2>
+          <button class="text-btn" id="bookmarkBtn" type="button">+ Bu sayfayı kaydet</button>
+        </div>
+        <div id="bookmarkList" class="bookmark-list"></div>
+      </section>
+
+      <section class="surah-section">
+        <div class="section-heading">
+          <h2>Sureler</h2>
+          <span class="count-pill" id="surahCount"></span>
+        </div>
+        <div class="search-wrap">
+          <span aria-hidden="true">⌕</span>
+          <input id="sureSearch" type="search" placeholder="Sure ara..." autocomplete="off" />
         </div>
         <div class="sure-list-container">
           <ul id="sureList" class="sure-list"></ul>
         </div>
+      </section>
+
+      <div class="sidebar-footer">
+        <button class="soft-btn" id="themeBtn" type="button" aria-label="Tema değiştir">◐ Tema</button>
+        <button class="soft-btn" id="focusBtn" type="button" aria-label="Odak moduna geç">◫ Odak modu</button>
       </div>
-      <div class="content">
-        <button class="sonrakiSayfa" onclick="nextPage()">İleri</button>
-        <div class="image-container">
-          <img id="kuranPage" src="Kuran_Sayfalari/0.png" alt="Kuran Sayfası" />
+    </aside>
+
+    <div class="sidebar-backdrop" id="sidebarBackdrop"></div>
+
+    <main class="reader">
+      <header class="topbar">
+        <div class="topbar-left">
+          <button class="icon-btn mobile-only" id="openSidebarBtn" type="button" aria-label="Menüyü aç">☰</button>
+          <div>
+            <span class="eyebrow" id="currentSurahLabel">Fatiha</span>
+            <strong id="currentPageDisplay">1. sayfa</strong>
+          </div>
         </div>
-        <button class="oncekiSayfa" onclick="previousPage()">Geri</button>
+        <div class="topbar-actions">
+          <button class="icon-btn" id="shareBtn" type="button" aria-label="Bu sayfayı paylaş" title="Paylaş">↗</button>
+          <button class="bookmark-icon-btn" id="quickBookmarkBtn" type="button" aria-label="Bu sayfayı yer imlerine ekle" title="Yer imi">☆</button>
+        </div>
+      </header>
+
+      <div class="reader-stage">
+        <button class="nav-btn prev" id="prevBtn" type="button" aria-label="Önceki sayfa">
+          <span aria-hidden="true">‹</span>
+          <small>Önceki</small>
+        </button>
+
+        <section class="page-card" aria-live="polite">
+          <div class="page-loading" id="pageLoading">Sayfa yükleniyor…</div>
+          <img id="kuranPage" src="Kuran_Sayfalari/0.png" alt="Kur'an 1. sayfa" draggable="false" />
+        </section>
+
+        <button class="nav-btn next" id="nextBtn" type="button" aria-label="Sonraki sayfa">
+          <small>Sonraki</small>
+          <span aria-hidden="true">›</span>
+        </button>
       </div>
-    </div>
-    <div id="secdePopup" class="secde-popup">
-      Okuduğunuz sayfada <b>SECDE AYETİ</b> vardır.
-    </div>
-    <script src="script.js"></script>
-  </body>
+
+      <footer class="mobile-reader-nav" aria-label="Mobil sayfa kontrolleri">
+        <button id="mobilePrevBtn" type="button">‹ Önceki</button>
+        <button id="mobileBookmarkBtn" type="button">☆ Kaydet</button>
+        <button id="mobileNextBtn" type="button">Sonraki ›</button>
+      </footer>
+    </main>
+  </div>
+
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+  <script src="script.js"></script>
+</body>
 </html>
