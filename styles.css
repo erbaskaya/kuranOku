@@ -348,10 +348,11 @@ select:focus, .search-wrap:focus-within { border-color: var(--brand); box-shadow
   max-height: calc(100vh - 140px);
   overflow: auto;
   overscroll-behavior: contain;
-  scrollbar-gutter: stable;
+  scrollbar-gutter: stable both-edges;
   border-radius: var(--radius-lg);
   touch-action: pan-x pan-y;
 }
+.page-scroll.zoom-active .page-card { margin-inline: auto; }
 .page-scroll:focus-visible {
   outline: 3px solid color-mix(in srgb, var(--brand) 22%, transparent);
   outline-offset: 4px;
@@ -390,6 +391,7 @@ select:focus, .search-wrap:focus-within { border-color: var(--brand); box-shadow
 }
 .page-card.zoomed { flex: 0 0 auto; }
 .page-card.zoomed img { max-width: none; }
+.page-card img { transform-origin: top left; }
 .page-card img.loading { opacity: 0; }
 .page-loading {
   position: absolute;
@@ -450,21 +452,22 @@ body.focus-mode .reader-stage { grid-template-columns: 105px minmax(320px, 880px
 
 .focus-exit-btn {
   display: none;
-  position: fixed;
-  top: 16px;
-  left: 16px;
-  z-index: 80;
-  min-height: 42px;
-  padding: 0 14px;
+  min-height: 40px;
+  padding: 0 13px;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   border: 1px solid var(--line);
   border-radius: 12px;
   background: var(--panel);
   color: var(--text);
-  box-shadow: var(--shadow-soft);
+  box-shadow: 0 3px 12px rgba(20,50,44,.04);
   cursor: pointer;
-  font-weight: 700;
+  font-weight: 750;
+  white-space: nowrap;
 }
-body.focus-mode .focus-exit-btn:not([hidden]) { display: block; }
+body.focus-mode .focus-exit-btn { display: inline-flex; }
+.focus-exit-btn:hover { background: var(--panel-soft); }
 
 @media (max-width: 1050px) {
   .app-shell { grid-template-columns: 300px minmax(0, 1fr); }

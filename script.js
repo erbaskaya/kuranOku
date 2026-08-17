@@ -513,7 +513,6 @@ function toggleFocusMode() {
 function setFocusMode(active) {
   document.body.classList.toggle('focus-mode', active);
   els.focusBtn.textContent = active ? '◫ Menüyü göster' : '◫ Odak modu';
-  if (els.exitFocusBtn) els.exitFocusBtn.hidden = !active;
 }
 
 function showPageLoading(message = 'Sayfa yükleniyor…') {
@@ -563,24 +562,30 @@ function applyZoom(options = {}) {
   const { resetScroll = false, announce = false } = options;
   if (!els.pageCard || !els.kuranPage || !els.pageScroll) return;
 
-  const isZoomed = zoomLevel > 100;
   const fitWidth = getFitPageWidth();
-  const targetWidth = Math.max(260, Math.round(fitWidth * (zoomLevel / 100)));
+  if (!fitWidth) return;
 
-  els.pageScroll.classList.toggle('zoom-active', isZoomed);
-  els.pageCard.classList.toggle('zoomed', isZoomed);
+  // Kur'an sayfaları görsel olduğu için zoom doğrudan resmin piksel genişliğini büyütür.
+  const scale = zoomLevel / 100;
+  const targetWidth = Math.max(260, Math.round(fitWidth * scale));
+  const naturalWidth = els.kuranPage.naturalWidth || targetWidth;
+  const naturalHeight = els.kuranPage.naturalHeight || targetWidth;
+  const targetHeight = Math.round(targetWidth * (naturalHeight / naturalWidth));
+  const availableHeight = Math.max(320, window.innerHeight - 140);
+  const needsScroll = targetWidth > els.pageScroll.clientWidth + 1 || targetHeight > availableHeight + 1;
 
-  if (isZoomed && fitWidth > 0) {
-    els.pageCard.style.width = `${targetWidth}px`;
-    els.pageCard.style.minWidth = `${targetWidth}px`;
-    els.kuranPage.style.width = '100%';
-    els.kuranPage.style.maxHeight = 'none';
-  } else {
-    els.pageCard.style.width = '';
-    els.pageCard.style.minWidth = '';
-    els.kuranPage.style.width = '';
-    els.kuranPage.style.maxHeight = '';
-  }
+  els.pageScroll.classList.toggle('zoom-active', zoomLevel > 100 || needsScroll);
+  els.pageCard.classList.toggle('zoomed', zoomLevel > 100);
+
+  // 100% dahil her seviyede gerçek img boyutunu açıkça belirliyoruz.
+  // Böylece + butonu yalnız kartı değil, Arapça yazıların bulunduğu PNG'yi büyütür.
+  els.pageCard.style.width = `${targetWidth}px`;
+  els.pageCard.style.minWidth = `${targetWidth}px`;
+  els.pageCard.style.maxWidth = 'none';
+  els.kuranPage.style.width = `${targetWidth}px`;
+  els.kuranPage.style.maxWidth = 'none';
+  els.kuranPage.style.maxHeight = 'none';
+  els.kuranPage.style.height = 'auto';
 
   els.zoomResetBtn.textContent = `${zoomLevel}%`;
   els.zoomResetBtn.setAttribute('aria-label', `Büyütme yüzde ${zoomLevel}. Yüzde 100 yapmak için tıklayın`);
